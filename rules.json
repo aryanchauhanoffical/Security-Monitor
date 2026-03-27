@@ -1,0 +1,135 @@
+[
+  {
+    "id": "RULE_001",
+    "name": "Root Access Attempt",
+    "severity": "HIGH",
+    "score": 85,
+    "logic": "OR",
+    "conditions": [
+      { "field": "message", "op": "regex", "value": "permission denied.*root|su:.*denied|superuser request" },
+      { "field": "tag",     "op": "equals", "value": "su" }
+    ]
+  },
+  {
+    "id": "RULE_002",
+    "name": "Frida / Xposed Hooking Framework",
+    "severity": "CRITICAL",
+    "score": 95,
+    "logic": "OR",
+    "conditions": [
+      { "field": "message", "op": "regex",   "value": "frida|xposed|substrate|cydia|magisk" },
+      { "field": "tag",     "op": "contains", "value": "XposedBridge" },
+      { "field": "tag",     "op": "contains", "value": "frida" }
+    ]
+  },
+  {
+    "id": "RULE_003",
+    "name": "App Installed from Unknown Sources",
+    "severity": "MEDIUM",
+    "score": 65,
+    "logic": "AND",
+    "conditions": [
+      { "field": "tag",     "op": "contains", "value": "PackageManager" },
+      { "field": "message", "op": "regex",    "value": "install.*unknown|sideload|INSTALL_ALLOW_UNKNOWN" }
+    ]
+  },
+  {
+    "id": "RULE_004",
+    "name": "Certificate Pinning Bypass",
+    "severity": "HIGH",
+    "score": 80,
+    "logic": "OR",
+    "conditions": [
+      { "field": "message", "op": "regex", "value": "X509TrustManager|trustAllHosts|ALLOW_ALL_HOSTNAME|checkServerTrusted.*override" },
+      { "field": "tag",     "op": "regex", "value": "SSLSocketFactory|TrustManager" }
+    ]
+  },
+  {
+    "id": "RULE_005",
+    "name": "Background Camera or Microphone Access",
+    "severity": "HIGH",
+    "score": 78,
+    "logic": "OR",
+    "conditions": [
+      { "field": "tag", "op": "regex", "value": "CameraService|CameraHAL|AudioFlinger|AudioRecord" },
+      { "field": "message", "op": "regex", "value": "camera.*background|microphone.*background|startRecording" }
+    ]
+  },
+  {
+    "id": "RULE_006",
+    "name": "ADB Command Abuse",
+    "severity": "HIGH",
+    "score": 75,
+    "logic": "AND",
+    "conditions": [
+      { "field": "tag",     "op": "contains", "value": "adbd" },
+      { "field": "message", "op": "regex",    "value": "shell|exec|cmd|am start|pm install" }
+    ]
+  },
+  {
+    "id": "RULE_007",
+    "name": "Rapid SMS Sending (Possible Smishing / Trojan)",
+    "severity": "HIGH",
+    "score": 80,
+    "logic": "OR",
+    "conditions": [
+      { "field": "tag",     "op": "contains", "value": "SmsManager" },
+      { "field": "message", "op": "regex",    "value": "sendTextMessage|sendMultipartTextMessage|SMS.*sent" }
+    ]
+  },
+  {
+    "id": "RULE_008",
+    "name": "GPS / Location Access from Background Process",
+    "severity": "MEDIUM",
+    "score": 60,
+    "logic": "AND",
+    "conditions": [
+      { "field": "tag",     "op": "regex", "value": "LocationManager|GnssLocationProvider|FusedLocation" },
+      { "field": "message", "op": "regex", "value": "requestLocationUpdates|getLastKnownLocation|startScan" }
+    ]
+  },
+  {
+    "id": "RULE_009",
+    "name": "Crypto Mining Indicator",
+    "severity": "MEDIUM",
+    "score": 65,
+    "logic": "OR",
+    "conditions": [
+      { "field": "message", "op": "regex", "value": "monero|stratum\\+tcp|mining.*pool|hashrate|cryptonight" },
+      { "field": "tag",     "op": "regex", "value": "miner|xmrig|coinhive" }
+    ]
+  },
+  {
+    "id": "RULE_010",
+    "name": "Rapid File Read / Write (Ransomware Pattern)",
+    "severity": "HIGH",
+    "score": 88,
+    "logic": "AND",
+    "conditions": [
+      { "field": "tag",     "op": "regex", "value": "Vold|StorageManager|FileProvider" },
+      { "field": "message", "op": "regex", "value": "encrypt|cipher|AES|rename.*\\.enc|\\.locked" }
+    ]
+  },
+  {
+    "id": "RULE_011",
+    "name": "Network Data Exfiltration Indicator",
+    "severity": "HIGH",
+    "score": 72,
+    "logic": "OR",
+    "conditions": [
+      { "field": "message", "op": "regex", "value": "POST.*\\/(upload|exfil|collect|beacon|c2|command)" },
+      { "field": "message", "op": "regex", "value": "base64.*POST|multipart.*form.*data.*\\d{5,}" }
+    ]
+  },
+  {
+    "id": "RULE_012",
+    "name": "Application Crash / Security Exception Storm",
+    "severity": "MEDIUM",
+    "score": 45,
+    "logic": "AND",
+    "conditions": [
+      { "field": "level",   "op": "gte",     "value": "E" },
+      { "field": "message", "op": "regex",   "value": "SecurityException|AccessControlException|FATAL EXCEPTION|Process.*killed" }
+    ]
+  }
+]

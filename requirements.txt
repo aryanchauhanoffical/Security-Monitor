@@ -1,0 +1,6 @@
+# Required for web dashboard (--web flag)
+flask>=3.0
+
+# All other dependencies are Python stdlib:
+# subprocess, re, json, time, math, argparse, threading,
+# collections, datetime, pathlib
